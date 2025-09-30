@@ -7,8 +7,12 @@ import { useFormValidate } from "../../../../../hooks/useFormValidate";
 import { SignUpSchema } from "../../../../../schemas/auth";
 import { TSignupFormError } from "../../../../../types/form";
 import { FormMessage } from "../../components/FormMessage";
+import { useActionState, useEffect } from "react";
+import { signUp } from "../../../../../actions/signup";
+import { toast } from "sonner";
 
 export default function SignupForm() {
+  const [error, action] = useActionState(signUp, undefined);
   const { errors, validateField } =
     useFormValidate<TSignupFormError>(SignUpSchema);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -16,14 +20,19 @@ export default function SignupForm() {
     validateField(name, value);
   };
 
-  console.log("errors", errors);
+  useEffect(() => {
+    if (error?.errorMessage) {
+      toast.error(error.errorMessage);
+    }
+  }, [error]);
+
   return (
     <div>
       <FormCard
         title="회원가입"
         footer={{ label: "이미 계정이 있으신가요?", href: "/login" }}
       >
-        <form className="space-y-6">
+        <form action={action} className="space-y-6">
           {/* 이름 */}
           <div className="space-y-2">
             <Label htmlFor="name">이름</Label>
