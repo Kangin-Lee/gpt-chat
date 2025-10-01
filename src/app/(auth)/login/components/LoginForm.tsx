@@ -1,20 +1,21 @@
 "use client";
-import { Label } from "@/components/ui/label";
-import FormCard from "./FormCard";
-import { Input } from "@/components/ui/input";
-import { useFormValidate } from "../../../../../hooks/useFormValidate";
-import { SignUpSchema } from "../../../../../schemas/auth";
-import { TSignupFormError } from "../../../../../types/form";
-import { FormMessage } from "../../components/FormMessage";
+
 import { useActionState, useEffect } from "react";
-import { signUp } from "../../../../../actions/signup";
+import { TLoginFormError } from "../../../../../types/form";
+import { useFormValidate } from "../../../../../hooks/useFormValidate";
 import { toast } from "sonner";
+import FormCard from "../../signup/components/FormCard";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { FormMessage } from "../../components/FormMessage";
+import { LoginSchema } from "../../../../../schemas/auth";
+import { login } from "../../../../../actions/login";
 import { Submit } from "../../components/Submit";
 
-export default function SignupForm() {
-  const [error, action] = useActionState(signUp, undefined);
+export default function LoginForm() {
+  const [error, action] = useActionState(login, undefined);
   const { errors, validateField } =
-    useFormValidate<TSignupFormError>(SignUpSchema);
+    useFormValidate<TLoginFormError>(LoginSchema);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     validateField(name, value);
@@ -29,24 +30,10 @@ export default function SignupForm() {
   return (
     <div>
       <FormCard
-        title="회원가입"
-        footer={{ label: "이미 계정이 있으신가요?", href: "/login" }}
+        title="로그인"
+        footer={{ label: "아직 계정이 없으신가요?", href: "/signup" }}
       >
         <form action={action} className="space-y-6">
-          {/* 이름 */}
-          <div className="space-y-2">
-            <Label htmlFor="name">이름</Label>
-            <Input
-              type="text"
-              name="name"
-              id="name"
-              placeholder="이름을 입력해 주세요"
-              error={!!errors?.name}
-              onChange={handleChange}
-            />
-            {errors?.name && <FormMessage message={errors.name[0]} />}
-          </div>
-
           {/* 이메일 */}
           <div className="space-y-2">
             <Label htmlFor="email">이메일</Label>
@@ -75,7 +62,7 @@ export default function SignupForm() {
             {errors?.password && <FormMessage message={errors.password[0]} />}
           </div>
 
-          <Submit className="w-full">가입하기</Submit>
+          <Submit className="w-full">로그인</Submit>
         </form>
       </FormCard>
     </div>
